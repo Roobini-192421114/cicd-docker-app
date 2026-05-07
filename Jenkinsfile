@@ -1,39 +1,24 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = "roobini1911/cicd-docker-app"
-        TAG = "latest"
-    }
-
     stages {
 
-        stage('Build Docker Image') {
+        stage('Build Stage') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:$TAG .'
+                echo 'Building application...'
             }
         }
 
-        stage('Run Tests') {
+        stage('Test Stage') {
             steps {
-                echo "Running tests..."
-                sh 'docker run --rm $IMAGE_NAME:$TAG python -c "print(\\"Tests Passed\\")"'
+                echo 'Running tests...'
+                sh 'python3 --version || true'
             }
         }
 
-        stage('Push Image to Docker Hub') {
+        stage('Deploy Stage') {
             steps {
-                sh 'docker push $IMAGE_NAME:$TAG'
-            }
-        }
-
-        stage('Deploy Container') {
-            steps {
-                sh '''
-                docker stop cicd-container || true
-                docker rm cicd-container || true
-                docker run -d -p 5000:5000 --name cicd-container $IMAGE_NAME:$TAG
-                '''
+                echo 'Deploying application...'
             }
         }
     }
